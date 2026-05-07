@@ -15,12 +15,16 @@ import {
   LayoutTemplate,
   Plus,
   MoreHorizontal,
-  Settings
+  Settings,
+  ChevronFirst
 } from "lucide-react";
+import VideoEditor from "@/components/VideoEditor";
 
 export default function HomePage() {
   const router = useRouter();
   const [user, setUser] = useState<{ email: string; username: string } | null>(null);
+  const [activeTool, setActiveTool] = useState<string | null>(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -54,45 +58,51 @@ export default function HomePage() {
 
   return (
     // Canva Dark Mode base
-    <main className="h-screen w-full bg-[#18191b] text-white flex overflow-hidden font-sans">
+    <main className="h-screen w-full bg-[#18191b] text-white flex font-sans">
       
       {/* Sidebar (Flush to edge) */}
-      <aside className="w-[260px] bg-[#18191b] border-r border-[#ffffff15] flex flex-col z-10 flex-shrink-0">
+      <aside className={`bg-[#18191b] border-r border-[#ffffff15] flex flex-col z-10 flex-shrink-0 transition-all duration-300 ${isSidebarCollapsed ? 'w-20' : 'w-[260px]'}`}>
         
         {/* Profile Header */}
-        <div className="p-4 flex items-center gap-3 mt-2">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+        <div className={`p-4 flex items-center gap-3 mt-2 ${isSidebarCollapsed ? 'justify-center' : ''}`}>
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
             {user.username.charAt(0).toUpperCase()}
           </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-[14px] font-semibold text-white truncate" style={{ fontFamily: 'var(--font-geist-sans)' }}>
-              {user.username}'s Workspace
-            </h2>
-            <p className="text-[12px] text-[#A0A0A0] truncate">Free</p>
-          </div>
+          {!isSidebarCollapsed && (
+            <div className="flex-1 min-w-0">
+              <h2 className="text-[14px] font-semibold text-white truncate" style={{ fontFamily: 'var(--font-geist-sans)' }}>
+                {user.username}'s Workspace
+              </h2>
+              <p className="text-[12px] text-[#A0A0A0] truncate">Free</p>
+            </div>
+          )}
         </div>
 
         {/* Primary Action Button */}
         <div className="px-4 mb-6 mt-2">
-          <button className="w-full bg-[#8b3dff] hover:bg-[#7a35e0] text-white font-semibold text-[14px] rounded-lg py-2.5 flex items-center justify-center gap-2 transition-colors">
-            <Plus className="w-5 h-5" />
-            Create a design
+          <button className={`w-full bg-[#8b3dff] hover:bg-[#7a35e0] text-white font-semibold text-[14px] rounded-lg py-2.5 flex items-center justify-center gap-2 transition-all ${isSidebarCollapsed ? 'p-2' : 'px-4'}`}>
+            <Plus className="w-5 h-5 flex-shrink-0" />
+            {!isSidebarCollapsed && <span>Create a design</span>}
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-2 space-y-0.5">
-          <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-medium bg-[#ffffff10] text-white transition-colors">
-            <Home className="w-5 h-5" />
-            Home
+        <nav className="flex-1 overflow-y-auto px-2 space-y-0.5 no-scrollbar">
+          <button 
+            onClick={() => setActiveTool(null)}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-medium transition-colors ${isSidebarCollapsed ? 'justify-center' : ''} ${!activeTool ? 'bg-[#ffffff10] text-white' : 'text-[#c0c0c0] hover:bg-[#ffffff08]'}`}
+            title="Home"
+          >
+            <Home className="w-5 h-5 flex-shrink-0" />
+            {!isSidebarCollapsed && <span>Home</span>}
           </button>
-          <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-medium text-[#c0c0c0] hover:bg-[#ffffff08] transition-colors">
-            <FolderOpen className="w-5 h-5" />
-            Projects
+          <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-medium text-[#c0c0c0] hover:bg-[#ffffff08] transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`} title="Projects">
+            <FolderOpen className="w-5 h-5 flex-shrink-0" />
+            {!isSidebarCollapsed && <span>Projects</span>}
           </button>
-          <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-medium text-[#c0c0c0] hover:bg-[#ffffff08] transition-colors">
-            <LayoutTemplate className="w-5 h-5" />
-            Templates
+          <button className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-medium text-[#c0c0c0] hover:bg-[#ffffff08] transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`} title="Templates">
+            <LayoutTemplate className="w-5 h-5 flex-shrink-0" />
+            {!isSidebarCollapsed && <span>Templates</span>}
           </button>
         </nav>
 
@@ -100,20 +110,27 @@ export default function HomePage() {
         <div className="p-4 border-t border-[#ffffff15]">
           <button 
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-medium text-[#A0A0A0] hover:bg-[#ffffff08] hover:text-white transition-colors"
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-medium text-[#A0A0A0] hover:bg-[#ffffff08] hover:text-white transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}
+            title="Sign Out"
           >
-            <LogOut className="w-4 h-4" />
-            Sign Out
+            <LogOut className="w-4 h-4 flex-shrink-0" />
+            {!isSidebarCollapsed && <span>Sign Out</span>}
           </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <section className="flex-1 relative flex flex-col bg-[#18191b] overflow-y-auto">
+      <section className="flex-1 relative flex flex-col bg-[#18191b] overflow-y-auto scroll-smooth">
         
         {/* Top Navbar */}
         <header className="h-16 flex items-center px-8 justify-between sticky top-0 bg-[#18191b]/90 backdrop-blur-sm z-20">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
+            <button 
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="p-2 hover:bg-[#ffffff10] rounded-lg transition-colors text-gray-400 hover:text-white"
+            >
+              <ChevronFirst className={`w-5 h-5 transition-transform duration-300 ${isSidebarCollapsed ? 'rotate-180' : ''}`} />
+            </button>
             <span className="font-bold text-xl tracking-tight" style={{ fontFamily: 'var(--font-geist-sans)' }}>
               Chidakasha
             </span>
@@ -125,8 +142,15 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* Content Body */}
-        <div className="flex-1 pb-12">
+        {activeTool === "Video Edit" ? (
+          <div className="w-full flex flex-col">
+            <div className="p-6">
+              <VideoEditor />
+            </div>
+          </div>
+        ) : (
+          /* Content Body */
+          <div className="flex-1 pb-12">
           
           {/* Canva Signature Gradient Banner */}
           <div className="w-full bg-gradient-to-r from-[#00c4cc] via-[#7d2ae8] to-[#ff0099] pt-12 pb-16 px-8 rounded-b-[24px] relative overflow-hidden">
@@ -160,9 +184,10 @@ export default function HomePage() {
               {mainTools.map((tool) => (
                 <button
                   key={tool.name}
+                  onClick={() => setActiveTool(tool.name)}
                   className="flex flex-col items-center justify-center gap-3 group w-[100px]"
                 >
-                  <div className={`w-16 h-16 rounded-[20px] ${tool.bg} border border-[#ffffff15] flex items-center justify-center shadow-lg group-hover:bg-[#303135] group-active:scale-95 transition-all`}>
+                  <div className={`w-16 h-16 rounded-[20px] ${tool.bg} border border-[#ffffff15] flex items-center justify-center shadow-lg group-hover:bg-[#303135] group-active:scale-95 transition-all ${activeTool === tool.name ? 'ring-2 ring-[#8b3dff]' : ''}`}>
                     <tool.icon className={`w-7 h-7 ${tool.color}`} />
                   </div>
                   <span className="text-[13px] font-medium text-[#c0c0c0] group-hover:text-white transition-colors">
@@ -198,6 +223,7 @@ export default function HomePage() {
 
           </div>
         </div>
+      )}
       </section>
     </main>
   );
