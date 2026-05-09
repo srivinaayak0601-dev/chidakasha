@@ -158,7 +158,7 @@ export default function VideoEditor() {
     }
   }
 
-  function updateClipProperty(id: string, property: keyof TimelineClip, value: any) {
+  function updateClipProperty(id: string, property: keyof TimelineClip, value: unknown) {
     setTimelineClips(prev => prev.map(c => c.id === id ? { ...c, [property]: value } : c));
   }
 
@@ -172,7 +172,7 @@ export default function VideoEditor() {
         const deltaX = e.clientX - dragStartX;
         const rect = timelineContentRef.current.getBoundingClientRect();
         const deltaTime = (deltaX / rect.width) * totalDuration;
-        let newStart = Math.max(0, dragStartClipTime + deltaTime);
+        const newStart = Math.max(0, dragStartClipTime + deltaTime);
         const current = timelineClips.find(c => c.id === isDraggingClip);
         if (current) {
           const others = timelineClips.filter(c => c.track === current.track && c.id !== current.id);
@@ -288,6 +288,7 @@ export default function VideoEditor() {
                     const isActive = currentTime >= clip.startTime && currentTime <= (clip.startTime + clip.duration);
                     if (!isActive) return null;
                     return (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       <div key={clip.id} className="absolute inset-0 flex items-center justify-center" style={{ opacity: clip.opacity / 100, mixBlendMode: clip.blendMode as any, zIndex: clip.track + 10 }}>
                         <div className="w-full h-full relative flex items-center justify-center" style={{ width: `${clip.scale}%`, height: `${clip.scale}%`, transform: `translate(${clip.posX}px, ${clip.posY}px)` }}>
                           {clip.assetId === "text-layer" ? (
@@ -315,6 +316,7 @@ export default function VideoEditor() {
         <aside className="w-72 bg-[#0d0d0d] border-l border-white/5 flex flex-col p-6 overflow-y-auto no-scrollbar z-[85]">
           <div className="flex items-center justify-between mb-8">
             {[ { id: 'edit', icon: Layout }, { id: 'color', icon: Palette }, { id: 'text', icon: TextIcon }, { id: 'audio', icon: Music } ].map(tab => (
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
               <button key={tab.id} onClick={() => setActivePanel(tab.id as any)} className={`p-2.5 rounded-xl transition-all ${activePanel === tab.id ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-600 hover:text-white'}`}><tab.icon className="w-5 h-5" /></button>
             ))}
           </div>

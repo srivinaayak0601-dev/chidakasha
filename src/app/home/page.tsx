@@ -16,9 +16,11 @@ import {
   Plus,
   MoreHorizontal,
   Settings,
-  ChevronFirst
+  ChevronFirst,
+  Box
 } from "lucide-react";
 import VideoEditor from "@/components/VideoEditor";
+import CadEditor from "@/components/CadEditor";
 
 export default function HomePage() {
   const router = useRouter();
@@ -35,7 +37,9 @@ export default function HomePage() {
     }
     
     try {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      setTimeout(() => setUser(parsedUser), 0);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       router.push("/");
     }
@@ -49,8 +53,9 @@ export default function HomePage() {
   if (!user) return null; // Or a loading spinner
 
   const mainTools = [
-    { name: "Photo Edit", icon: ImageIcon, color: "text-blue-400", bg: "bg-[#252629]" },
+    { name: "Photo & Poster", icon: ImageIcon, color: "text-blue-400", bg: "bg-[#252629]" },
     { name: "Video Edit", icon: Film, color: "text-purple-400", bg: "bg-[#252629]" },
+    { name: "3D CAD", icon: Box, color: "text-yellow-400", bg: "bg-[#252629]" },
     { name: "AI Guide", icon: Bot, color: "text-emerald-400", bg: "bg-[#252629]" },
     { name: "Code", icon: Code, color: "text-orange-400", bg: "bg-[#252629]" },
     { name: "Enhance", icon: WandSparkles, color: "text-pink-400", bg: "bg-[#252629]" },
@@ -71,7 +76,7 @@ export default function HomePage() {
           {!isSidebarCollapsed && (
             <div className="flex-1 min-w-0">
               <h2 className="text-[14px] font-semibold text-white truncate" style={{ fontFamily: 'var(--font-geist-sans)' }}>
-                {user.username}'s Workspace
+                {user.username}&apos;s Workspace
               </h2>
               <p className="text-[12px] text-[#A0A0A0] truncate">Free</p>
             </div>
@@ -147,6 +152,10 @@ export default function HomePage() {
             <div className="p-6">
               <VideoEditor />
             </div>
+          </div>
+        ) : activeTool === "3D CAD" ? (
+          <div className="w-full h-[calc(100vh-64px)] p-6 flex flex-col">
+            <CadEditor />
           </div>
         ) : (
           /* Content Body */
