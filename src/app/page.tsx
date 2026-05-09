@@ -33,6 +33,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.error || "Failed to send OTP");
       
       setStep("otp");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -57,6 +58,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.error || "Invalid OTP");
       
       setStep("username");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
     } finally {
