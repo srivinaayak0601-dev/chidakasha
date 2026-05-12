@@ -14,6 +14,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
+  const [otpToken, setOtpToken] = useState("");
   const [username, setUsername] = useState("");
 
   const handleSendOtp = async (e: React.FormEvent) => {
@@ -32,6 +33,7 @@ export default function LoginPage() {
       
       if (!res.ok) throw new Error(data.error || "Failed to send OTP");
       
+      setOtpToken(data.token);
       setStep("otp");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -50,7 +52,7 @@ export default function LoginPage() {
       const res = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ email, otp, token: otpToken }),
       });
       
       const data = await res.json();

@@ -1,31 +1,46 @@
 import { NextResponse } from 'next/server';
-import { otpStore } from '@/lib/otp-store';
+import { createHmac } from 'crypto';
+
+const SECRET = process.env.OTP_SECRET || 'chidakasha-dev-secret-key';
+
+function verifyOtpToken(token: string, email: string, otp: string): { valid: boolean; expired: boolean } {
+  try {
+    const decoded = Buffer.from(token, 'base64').toString('utf-8');
+    const parts = decoded.split(':');
+    if (parts.length !== 4) return { valid: false, expired: false };
+
+    const [tokenEmail, tokenOtp, expiresAtStr, sig] = parts;
+    const expiresAt = parseInt(expiresAtStr, 10);
+    const payload = `${tokenEmail}:${tokenOtp}:${expiresAtStr}`;
+    const expectedSig = createHmac('sha256', SECRET).update(payload).digest('hex');
+
+    if (sig !== expectedSig) return { valid: false, expired: false };
+    if (Date.now() > expiresAt) return { valid: false, expired: true };
+    if (tokenEmail !== email || tokenOtp !== otp) return { valid: false, expired: false };
+
+    return { valid: true, expired: false };
+  } catch {
+    return { valid: false, expired: false };
+  }
+}
 
 export async function POST(request: Request) {
   try {
-    const { email, otp } = await request.json();
+    const { email, otp, token } = await request.json();
 
-    if (!email || !otp) {
-      return NextResponse.json({ error: 'Email and OTP are required' }, { status: 400 });
+    if (!email || !otp || !token) {
+      return NextResponse.json({ error: 'Email, OTP, and token are required' }, { status: 400 });
     }
 
-    const storedData = otpStore.get(email);
+    const result = verifyOtpToken(token, email, otp);
 
-    if (!storedData) {
-      return NextResponse.json({ error: 'No OTP found for this email. Please request a new one.' }, { status: 400 });
-    }
-
-    if (Date.now() > storedData.expiresAt) {
-      otpStore.delete(email);
+    if (result.expired) {
       return NextResponse.json({ error: 'OTP has expired. Please request a new one.' }, { status: 400 });
     }
 
-    if (storedData.otp !== otp) {
+    if (!result.valid) {
       return NextResponse.json({ error: 'Invalid OTP' }, { status: 400 });
     }
-
-    // Success! Clear the OTP from store
-    otpStore.delete(email);
 
     return NextResponse.json({ success: true });
   } catch (error) {
