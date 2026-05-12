@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { otpStore } from '@/lib/otp-store';
+import { createHmac } from 'crypto';
+
+const SECRET = process.env.OTP_SECRET || 'chidakasha-dev-secret-key';
+
+function signOtpToken(email: string, otp: string, expiresAt: number): string {
+  const payload = `${email}:${otp}:${expiresAt}`;
+  const sig = createHmac('sha256', SECRET).update(payload).digest('hex');
+  return Buffer.from(`${payload}:${sig}`).toString('base64');
+}
 
 export async function POST(request: Request) {
   try {
@@ -12,30 +20,30 @@ export async function POST(request: Request) {
 
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    
-    // Store OTP (expires in 5 minutes)
-    otpStore.set(email, {
-      otp,
-      expiresAt: Date.now() + 5 * 60 * 1000,
-    });
+    const expiresAt = Date.now() + 5 * 60 * 1000;
+
+    // Create a signed token (no database needed)
+    const token = signOtpToken(email, otp, expiresAt);
+
+    if (!process.env.EMAIL_APP_PASSWORD) {
+      console.warn(`[DEV MODE] OTP for ${email}: ${otp}`);
+      return NextResponse.json({ success: true, token, devMode: true });
+    }
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // use STARTTLS
       auth: {
         user: process.env.EMAIL_USER || 'chidakashaai@gmail.com',
         pass: process.env.EMAIL_APP_PASSWORD,
       },
+      connectionTimeout: 8000,  // 8s connection timeout
+      greetingTimeout: 8000,
+      socketTimeout: 8000,
     });
 
-    // We will wrap sendMail in a try/catch but for development without a real password,
-    // we can also just log it.
-    if (!process.env.EMAIL_APP_PASSWORD) {
-      console.warn(`[DEV MODE] No EMAIL_APP_PASSWORD found. The OTP for ${email} is: ${otp}`);
-      // Return success anyway so UI works during development
-      return NextResponse.json({ success: true, devMode: true, message: 'OTP logged to server console (App Password missing in .env.local)' });
-    }
-
-    const mailOptions = {
+    await transporter.sendMail({
       from: process.env.EMAIL_USER || 'chidakashaai@gmail.com',
       to: email,
       subject: 'Your Chidakasha Verification Code',
@@ -48,11 +56,9 @@ export async function POST(request: Request) {
           <p>This code will expire in 5 minutes.</p>
         </div>
       `,
-    };
+    });
 
-    await transporter.sendMail(mailOptions);
-
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, token });
   } catch (error) {
     console.error('Error sending OTP:', error);
     return NextResponse.json({ error: 'Failed to send OTP' }, { status: 500 });

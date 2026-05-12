@@ -13,6 +13,7 @@
     "@react-three/fiber": "^9.6.1",
     "@types/three": "^0.184.1",
     "firebase": "^11.10.0",
+    "framer-motion": "^12.38.0",
     "lucide-react": "^1.14.0",
     "next": "16.2.4",
     "nodemailer": "^8.0.7",
