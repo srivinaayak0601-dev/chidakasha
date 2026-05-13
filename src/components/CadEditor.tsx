@@ -653,7 +653,7 @@ function createSketchGeometry(points3d: THREE.Vector3[], depth: number) {
   // Convert 3D points to 2D shape (assuming drawn on XZ plane approx, mapped to XY for Shape)
   const validPoints = points3d.filter(p => p && typeof p.x === 'number' && typeof p.z === 'number');
   if (validPoints.length < 3) return new THREE.BoxGeometry(0.5, 0.5, 0.5);
-  
+
   const pts = validPoints.map(p => new THREE.Vector2(p.x, -p.z));
   const shape2d = new THREE.Shape(pts);
   const safeDepth = Math.max(0.01, depth || 1);
@@ -700,12 +700,12 @@ function SketchLine({ points, color, dashed }: { points: THREE.Vector3[], color:
       return null;
     }
     const validPoints = points.filter(p => p && typeof p.x === 'number' && typeof p.y === 'number' && typeof p.z === 'number');
-    
+
     if (validPoints.length < 2) {
       if (points.length > 0) console.log("SketchLine: Not enough valid points", points);
       return null;
     }
-    
+
     try {
       const geo = new THREE.BufferGeometry().setFromPoints(validPoints);
       return geo;
