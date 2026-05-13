@@ -1,6 +1,6 @@
 import React, { useState, useRef, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Grid, Box, Sphere, Cylinder, RoundedBox, Edges, Line } from "@react-three/drei";
+import { OrbitControls, Box, Sphere, Cylinder, RoundedBox } from "@react-three/drei";
 import { Trash2, Box as BoxIcon, Circle, Cylinder as CylinderIcon, Combine, Scissors, Blend, Upload, MousePointer2, Star, PenTool, CheckCircle2, Hand } from "lucide-react";
 import * as THREE from "three";
 import { CSG } from "three-csg-ts";
@@ -77,7 +77,7 @@ export default function CadEditor() {
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCanvasClick = (e: any) => {
-    if (sketchMode) {
+    if (sketchMode && e.point) {
       e.stopPropagation();
       setSketchPoints(prev => [...prev, e.point]);
     }
@@ -350,7 +350,7 @@ export default function CadEditor() {
             />
           ))}
 
-          {/* Active Sketch Lines */}
+          {/* Active Sketch Points */}
           {sketchMode && sketchPoints.length > 0 && (
              <group>
                {sketchPoints.map((p, i) => (
@@ -359,29 +359,15 @@ export default function CadEditor() {
                  </Sphere>
                ))}
                {sketchPoints.length > 1 && (
-                 <Line
-                   points={sketchPoints}
-                   color="#8b3dff"
-                   lineWidth={2}
-                 />
+                 <SketchLine points={sketchPoints} color="#8b3dff" />
                )}
                {sketchPoints.length > 2 && (
-                 <Line
-                   points={[sketchPoints[sketchPoints.length-1], sketchPoints[0]]}
-                   color="#8b3dff"
-                   lineWidth={2}
-                   dashed
-                   dashSize={0.2}
-                   gapSize={0.1}
-                 />
+                 <SketchLine points={[sketchPoints[sketchPoints.length-1], sketchPoints[0]]} color="#8b3dff" dashed />
                )}
              </group>
           )}
 
-          <Grid
-            args={[20, 20]} cellSize={1} cellThickness={1} cellColor="#333" sectionSize={5} sectionThickness={1.5} sectionColor="#555" fadeDistance={40} fadeStrength={1.5}
-            onPointerDown={handleCanvasClick}
-          />
+          <gridHelper args={[20, 20, '#555', '#333']} />
           <OrbitControls makeDefault enabled={!sculptMode} />
         </Canvas>
       </div>
@@ -539,6 +525,7 @@ function RenderShape({ shape, isSelected, sculptMode, onClick }: { shape: ShapeD
     if (!mesh.geometry.attributes.position) return;
 
     // Simplistic Sculpting: Pull vertices near intersection
+    if (!e.point) return;
     const point = mesh.worldToLocal(e.point.clone());
     const positions = mesh.geometry.attributes.position;
     const radius = 0.5;
@@ -567,14 +554,14 @@ function RenderShape({ shape, isSelected, sculptMode, onClick }: { shape: ShapeD
       {shape.type === 'sphere' && (
         <Sphere args={[shape.dimensions.radius || 0.5, 32, 32]}>
           <primitive object={material} attach="material" />
-          {isSelected && <Edges scale={1.001} color="white" />}
+          {isSelected && <SelectionOutline color="white" />}
         </Sphere>
       )}
 
       {shape.type === 'cylinder' && (
         <Cylinder args={[shape.dimensions.radiusTop || 0.5, shape.dimensions.radiusBottom || 0.5, shape.dimensions.height || 1, 32]}>
           <primitive object={material} attach="material" />
-          {isSelected && <Edges scale={1.001} color="white" />}
+          {isSelected && <SelectionOutline color="white" />}
         </Cylinder>
       )}
 
@@ -585,7 +572,7 @@ function RenderShape({ shape, isSelected, sculptMode, onClick }: { shape: ShapeD
       {(shape.type === 'csg' || shape.type === 'imported') && shape.geometry && (
         <mesh geometry={shape.geometry}>
            <primitive object={material} attach="material" />
-           {isSelected && <Edges geometry={shape.geometry} scale={1.001} color="white" />}
+           {isSelected && shape.geometry && <SelectionOutline color="white" />}
         </mesh>
       )}
     </group>
@@ -593,7 +580,15 @@ function RenderShape({ shape, isSelected, sculptMode, onClick }: { shape: ShapeD
 }
 
 function BoxShape({ shape, material, isSelected }: { shape: ShapeData, material: THREE.Material, isSelected: boolean }) {
-  const { width = 1, height = 1, depth = 1, filletRadius = 0, edgeType = 'sharp' } = shape.dimensions;
+  const { width: rawW = 1, height: rawH = 1, depth: rawD = 1, filletRadius: rawFillet = 0, edgeType = 'sharp' } = shape.dimensions;
+
+  // Clamp dimensions to safe positive values to avoid RangeError
+  const width = Math.max(0.01, rawW);
+  const height = Math.max(0.01, rawH);
+  const depth = Math.max(0.01, rawD);
+  // Fillet/chamfer radius must not exceed half the smallest dimension
+  const maxFillet = Math.min(width, height, depth) / 2;
+  const filletRadius = Math.max(0, Math.min(rawFillet, maxFillet));
 
   const geometry = useMemo(() => {
     if (edgeType === 'fillet' && filletRadius > 0) {
@@ -611,18 +606,20 @@ function BoxShape({ shape, material, isSelected }: { shape: ShapeData, material:
       shape2d.lineTo(-hw, hd);
       shape2d.lineTo(-hw, -hd);
 
+      const safeBevel = Math.min(filletRadius, hw * 0.9, hd * 0.9, (height / 2) * 0.9);
+
       const extrudeSettings = {
-        depth: height,
+        depth: Math.max(0.01, height - safeBevel * 2),
         bevelEnabled: true,
-        bevelSegments: 1, // 1 segment creates a straight chamfer
+        bevelSegments: 1,
         steps: 1,
-        bevelSize: filletRadius,
-        bevelThickness: filletRadius
+        bevelSize: safeBevel,
+        bevelThickness: safeBevel
       };
 
       const geo = new THREE.ExtrudeGeometry(shape2d, extrudeSettings);
-      geo.translate(0, 0, -height/2); // Extrude geo grows in Z, map it to match BoxGeometry
-      geo.rotateX(Math.PI / 2); // Rotate to stand up
+      geo.translate(0, 0, -height/2);
+      geo.rotateX(Math.PI / 2);
       return geo;
     }
 
@@ -633,7 +630,7 @@ function BoxShape({ shape, material, isSelected }: { shape: ShapeData, material:
     return (
         <RoundedBox args={[width, height, depth]} radius={filletRadius} smoothness={4}>
           <primitive object={material} attach="material" />
-          {isSelected && <Edges scale={1.001} color="white" />}
+          {isSelected && <SelectionOutline color="white" />}
         </RoundedBox>
     );
   }
@@ -643,20 +640,31 @@ function BoxShape({ shape, material, isSelected }: { shape: ShapeData, material:
   return (
     <mesh geometry={geometry}>
       <primitive object={material} attach="material" />
-      {isSelected && <Edges geometry={geometry} scale={1.001} color="white" />}
+      {isSelected && <SelectionOutline color="white" />}
     </mesh>
   );
 }
 
 function createSketchGeometry(points3d: THREE.Vector3[], depth: number) {
+  // Guard against degenerate shapes
+  if (points3d.length < 3) {
+    return new THREE.BoxGeometry(0.5, 0.5, 0.5); // Fallback
+  }
   // Convert 3D points to 2D shape (assuming drawn on XZ plane approx, mapped to XY for Shape)
-  const pts = points3d.map(p => new THREE.Vector2(p.x, -p.z));
+  const validPoints = points3d.filter(p => p && typeof p.x === 'number' && typeof p.z === 'number');
+  if (validPoints.length < 3) return new THREE.BoxGeometry(0.5, 0.5, 0.5);
+  
+  const pts = validPoints.map(p => new THREE.Vector2(p.x, -p.z));
   const shape2d = new THREE.Shape(pts);
-  const extrudeSettings = { depth: depth || 1, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 0.05, bevelThickness: 0.05 };
-  const geo = new THREE.ExtrudeGeometry(shape2d, extrudeSettings);
-  // Rotate to stand up or lay flat based on drawing plane
-  geo.rotateX(Math.PI / 2);
-  return geo;
+  const safeDepth = Math.max(0.01, depth || 1);
+  const extrudeSettings = { depth: safeDepth, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 0.05, bevelThickness: 0.05 };
+  try {
+    const geo = new THREE.ExtrudeGeometry(shape2d, extrudeSettings);
+    geo.rotateX(Math.PI / 2);
+    return geo;
+  } catch {
+    return new THREE.BoxGeometry(0.5, 0.5, 0.5); // Fallback on error
+  }
 }
 
 function ExtrusionShape({ shape, material, isSelected }: { shape: ShapeData, material: THREE.Material, isSelected: boolean }) {
@@ -679,7 +687,59 @@ function ExtrusionShape({ shape, material, isSelected }: { shape: ShapeData, mat
   return (
     <mesh geometry={geometry}>
       <primitive object={material} attach="material" />
-      {isSelected && <Edges geometry={geometry} scale={1.001} color="white" />}
+      {isSelected && <SelectionOutline color="white" />}
     </mesh>
+  );
+}
+
+// Native Three.js line for sketch drawing (replaces drei Line which crashes)
+function SketchLine({ points, color, dashed }: { points: THREE.Vector3[], color: string, dashed?: boolean }) {
+  const geometry = useMemo(() => {
+    if (!Array.isArray(points)) {
+      console.warn("SketchLine: points is not an array", points);
+      return null;
+    }
+    const validPoints = points.filter(p => p && typeof p.x === 'number' && typeof p.y === 'number' && typeof p.z === 'number');
+    
+    if (validPoints.length < 2) {
+      if (points.length > 0) console.log("SketchLine: Not enough valid points", points);
+      return null;
+    }
+    
+    try {
+      const geo = new THREE.BufferGeometry().setFromPoints(validPoints);
+      return geo;
+    } catch (err) {
+      console.error("SketchLine: setFromPoints failed", err, validPoints);
+      return null;
+    }
+  }, [points]);
+
+  const material = useMemo(() => {
+    if (dashed) {
+      const mat = new THREE.LineDashedMaterial({ color, dashSize: 0.2, gapSize: 0.1 });
+      return mat;
+    }
+    return new THREE.LineBasicMaterial({ color });
+  }, [color, dashed]);
+
+  if (!geometry) return null;
+
+  return (
+    <primitive object={new THREE.Line(geometry, material)} />
+  );
+}
+
+// Simple selection outline using wireframe overlay (replaces drei Edges which uses LineGeometry)
+function SelectionOutline({ color }: { color: string }) {
+  return (
+    <meshBasicMaterial
+      color={color}
+      wireframe
+      transparent
+      opacity={0.15}
+      depthTest={false}
+      attach="material-1"
+    />
   );
 }
