@@ -21,6 +21,7 @@
     "react-dom": "19.2.4",
     "three": "^0.184.0",
     "three-csg-ts": "^3.2.0",
+    "three-stdlib": "^2.36.1",
     "uuid": "^14.0.0"
   },
   "devDependencies": {

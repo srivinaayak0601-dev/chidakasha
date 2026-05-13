@@ -10,7 +10,8 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import {
   LogOut, Film, Box, Image as ImageIcon, Bot, Code, WandSparkles,
   Home, FolderOpen, LayoutTemplate, Plus, Settings, ChevronFirst,
-  ArrowRight, CheckCircle2, Sparkles, Mail
+  ArrowRight, CheckCircle2, Sparkles, Mail,
+  Music, ArrowLeftRight, Ruler, Droplets, Download, PenTool
 } from "lucide-react";
 import VideoEditor from "@/components/VideoEditor";
 import CadEditor from "@/components/CadEditor";
@@ -116,6 +117,8 @@ export default function HomePage() {
   const [wordKey, setWordKey] = useState(0);
   const [waitlistEmail, setWaitlistEmail] = useState("");
   const [waitlistState, setWaitlistState] = useState<"idle" | "loading" | "done">("idle");
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
 
   useEffect(() => {
     const stored = localStorage.getItem("chidakasha_user");
@@ -156,11 +159,28 @@ export default function HomePage() {
 
   if (!user) return null;
 
-  const sideNav = [
+  const defaultNav = [
     { label: "Home", icon: Home, active: !activeTool, onClick: () => setActiveTool(null) },
     { label: "Projects", icon: FolderOpen, active: false, onClick: () => {} },
     { label: "Templates", icon: LayoutTemplate, active: false, onClick: () => {} },
   ];
+
+  const videoNav = [
+    { label: "Home", icon: Home, active: false, onClick: () => setActiveTool(null) },
+    { label: "Media", icon: FolderOpen, active: true, onClick: () => {} },
+    { label: "Audio", icon: Music, active: false, onClick: () => {} },
+    { label: "Transitions", icon: ArrowLeftRight, active: false, onClick: () => {} },
+  ];
+
+  const cadNav = [
+    { label: "Home", icon: Home, active: false, onClick: () => setActiveTool(null) },
+    { label: "Measurements", icon: Ruler, active: false, onClick: () => {} },
+    { label: "Materials", icon: Droplets, active: false, onClick: () => {} },
+    { label: "Custom Sketch", icon: PenTool, active: false, onClick: () => {} },
+    { label: "Import Mesh", icon: Download, active: false, onClick: () => {} },
+  ];
+
+  const sideNav = activeTool === "Video Edit" ? videoNav : activeTool === "3D CAD" ? cadNav : defaultNav;
 
   const divisions = [
     {
@@ -195,7 +215,15 @@ export default function HomePage() {
       accent: "text-yellow-400",
       desc: "Parametric 3D modeling. Engineers & architects.",
       preview: (
-        <div className="w-full h-full bg-[#0a0a0c] rounded-xl overflow-hidden">
+        <div className="w-full h-full bg-[#0a0a0c] rounded-xl overflow-hidden relative">
+          <div className="absolute top-2 right-2 flex gap-1 z-10">
+            <div className="bg-black/50 p-1.5 rounded-md border border-white/10 backdrop-blur-md">
+              <Download className="w-3.5 h-3.5 text-yellow-400/80" />
+            </div>
+            <div className="bg-black/50 p-1.5 rounded-md border border-white/10 backdrop-blur-md">
+              <PenTool className="w-3.5 h-3.5 text-yellow-400/80" />
+            </div>
+          </div>
           <WireframeBox />
         </div>
       ),
@@ -257,7 +285,55 @@ export default function HomePage() {
       </aside>
 
       {/* ── Main ── */}
-      <section className="flex-1 flex flex-col overflow-hidden">
+      <section className="flex-1 flex flex-col overflow-hidden relative">
+
+        {/* Template Picker Modal */}
+        {showTemplatePicker && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+            <div className="bg-[#121214] border border-white/10 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
+              <button
+                onClick={() => setShowTemplatePicker(false)}
+                className="absolute top-4 right-4 text-white/40 hover:text-white"
+              >
+                ✕
+              </button>
+              <h2 className="text-2xl font-bold text-white mb-2 text-center tracking-tight">What are we building today?</h2>
+              <p className="text-white/50 text-center mb-6 text-sm">Select a starting point for your project.</p>
+
+              <div className="grid grid-cols-1 gap-3">
+                <button onClick={() => { setActiveTool("3D CAD"); setShowTemplatePicker(false); }} className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] hover:border-yellow-500/30 transition-all group text-left">
+                  <div className="w-12 h-12 rounded-lg bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Box className="w-6 h-6 text-yellow-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">A 3D Part</h3>
+                    <p className="text-white/40 text-xs">Parametric modeling, sculpting, and custom extrusions.</p>
+                  </div>
+                </button>
+
+                <button onClick={() => { setActiveTool("Video Edit"); setShowTemplatePicker(false); }} className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] hover:border-purple-500/30 transition-all group text-left">
+                  <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Film className="w-6 h-6 text-purple-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">A Video</h3>
+                    <p className="text-white/40 text-xs">Multi-track editing, keyframes, and 3.5D spatial timelines.</p>
+                  </div>
+                </button>
+
+                <button onClick={() => { setActiveTool("Photo & Poster"); setShowTemplatePicker(false); }} className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] hover:border-blue-500/30 transition-all group text-left">
+                  <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <ImageIcon className="w-6 h-6 text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">A Social Post</h3>
+                    <p className="text-white/40 text-xs">Smart layouts, posters, and 3D render integrations.</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Header */}
         <header className="h-14 flex items-center px-5 gap-4 border-b border-white/[0.07] bg-[#09090b]/90 backdrop-blur-sm z-20 flex-shrink-0">
@@ -297,6 +373,43 @@ export default function HomePage() {
             <div className="p-6"><VideoEditor /></div>
           ) : activeTool === "3D CAD" ? (
             <div className="h-full p-6 flex flex-col"><CadEditor /></div>
+          ) : activeTool === "AI Guide" ? (
+            <div className="h-full flex flex-col items-center justify-center p-6 bg-[#09090b]">
+              <div className="max-w-2xl w-full text-center">
+                <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 text-[12px] text-purple-300 mb-6">
+                  <Bot className="w-4 h-4" /> AI Command Center
+                </div>
+                <h1 className="text-4xl font-black text-white mb-4 tracking-tight">What do you want to build?</h1>
+                <p className="text-white/50 text-[15px] mb-8">
+                  Type a natural language request, and Chidakasha will generate the 3D model, video layout, or poster for you.
+                </p>
+                <form className="relative" onSubmit={(e) => e.preventDefault()}>
+                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                    <WandSparkles className="h-5 w-5 text-purple-400" />
+                  </div>
+                  <input
+                    type="text"
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    placeholder="Create a 10cm x 10cm hex-bolt with a 2mm thread..."
+                    className="w-full bg-[#121214] border border-white/10 text-white text-[16px] rounded-2xl pl-12 pr-32 py-5 outline-none focus:border-purple-500/50 shadow-2xl focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-white/20"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-[#8b3dff] hover:bg-[#7a35e0] text-white font-semibold px-4 py-2.5 rounded-xl transition-all active:scale-95 text-[14px]"
+                  >
+                    Generate
+                  </button>
+                </form>
+                <div className="flex gap-3 justify-center mt-6">
+                  {["A futuristic racing helmet", "A 3D product showcase for a watch", "A promotional poster for a coffee shop"].map(suggestion => (
+                    <button key={suggestion} onClick={() => setAiPrompt(suggestion)} className="text-[12px] text-white/40 hover:text-white/80 bg-white/[0.03] hover:bg-white/[0.08] px-3 py-1.5 rounded-lg border border-white/[0.05] transition-colors">
+                      &quot;{suggestion}&quot;
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           ) : (
 
             /* ── HOME VIEW ── */
@@ -339,7 +452,7 @@ export default function HomePage() {
 
                 <div className="animate-slide-up-delay-4 relative z-10 flex items-center gap-3">
                   <button
-                    onClick={() => document.getElementById("divisions")?.scrollIntoView({ behavior: "smooth" })}
+                    onClick={() => setShowTemplatePicker(true)}
                     className="bg-[#8b3dff] hover:bg-[#9d5cff] text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 transition-all active:scale-95 shadow-[0_0_24px_rgba(139,61,255,0.4)] hover:shadow-[0_0_30px_rgba(139,61,255,0.8)] hover:scale-[1.03]"
                   >
                     Start Creating <ArrowRight className="w-4 h-4" />
