@@ -333,6 +333,14 @@ export default function CadEditor() {
 
         <Canvas camera={{ position: [6, 5, 8], fov: 45 }} className={`w-full h-full ${sketchMode || sculptMode ? 'cursor-crosshair' : ''}`} onPointerDown={handleCanvasClick}>
           <ambientLight intensity={0.6} />
+
+          {/* Invisible plane for catching raycasts when sketching */}
+          {sketchMode && (
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} onPointerDown={handleCanvasClick}>
+              <planeGeometry args={[100, 100]} />
+              <meshBasicMaterial visible={false} />
+            </mesh>
+          )}
           <directionalLight position={[10, 10, 5]} intensity={1.5} castShadow />
           <directionalLight position={[-10, -10, -5]} intensity={0.5} />
 
