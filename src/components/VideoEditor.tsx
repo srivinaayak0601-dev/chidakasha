@@ -3,8 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { 
   Plus, Play, Pause, Scissors, Trash2, Video as VideoIcon,
-  ChevronLast, ChevronFirst, Copy, Layout, Music, Undo2, Palette, Type as TextIcon, Settings2, Save, Cloud
-} from "lucide-react";
+  ChevronLast, ChevronFirst, Copy, Layout, Music, Undo2, Palette, Type as TextIcon, Settings2, Save} from "lucide-react";
 import { db, storage } from "@/lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";

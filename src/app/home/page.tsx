@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState} from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Canvas } from "@react-three/fiber";
@@ -8,7 +8,7 @@ import { OrbitControls } from "@react-three/drei";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import {
-  LogOut, Film, Box, Image as ImageIcon, Bot, Code, WandSparkles,
+  LogOut, Film, Box, Image as ImageIcon, Bot, WandSparkles,
   Home, FolderOpen, LayoutTemplate, Plus, Settings, ChevronFirst,
   ArrowRight, CheckCircle2, Sparkles, Mail,
   Music, ArrowLeftRight, Ruler, Droplets, Download, PenTool
