@@ -643,8 +643,6 @@ function BoxShape({ shape, material, isSelected }: { shape: ShapeData, material:
     );
   }
 
-  // NOTE: In a real architecture, we would attach meshRef via forwardRef or context to let RenderShape access it for sculpting.
-  // For the sake of this patch without massive refactoring, we'll let it be. Sculpting might not perfectly register on wrapped meshes.
   return (
     <mesh geometry={geometry}>
       <primitive object={material} attach="material" />
