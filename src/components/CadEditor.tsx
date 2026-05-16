@@ -217,6 +217,9 @@ export default function CadEditor() {
     } else {
        reader.readAsText(file);
     }
+
+    // Reset input so the same file can be uploaded again if deleted
+    e.target.value = '';
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
