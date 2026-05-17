@@ -1,7 +1,7 @@
-import React, { useState, KeyboardEvent } from "react";
+import React, { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrthographicCamera, PerspectiveCamera, OrbitControls, Grid, Line as DreiLine, } from "@react-three/drei";
-import { Layers, MousePointer2, Square, Circle, Minus, Terminal, CheckSquare, Box as BoxIcon } from "lucide-react";
+import { Layers, MousePointer2, Square, Circle, Minus, CheckSquare, Box as BoxIcon } from "lucide-react";
 import * as THREE from 'three';
 
 type Layer = {
@@ -33,33 +33,12 @@ export default function CadEditor() {
   const [selectedShapeId, setSelectedShapeId] = useState<string | null>(null);
 
   // Command line
-  const [commandInput, setCommandInput] = useState('');
-  const [commandHistory, setCommandHistory] = useState<string[]>(['Chidakasha CAD Engine v2.0', 'Dual Engine: 2D Drafting & 3D B-Rep']);
 
   // Drawing state
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentPoints, setCurrentPoints] = useState<[number, number, number][]>([]);
   const [cursorPos, setCursorPos] = useState<[number, number, number]>([0, 0, 0]);
 
-  const handleCommandSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      const cmd = commandInput.trim().toLowerCase();
-      let response = `Command: ${cmd}`;
-
-      if (cmd === 'line' || cmd === 'l') { setActiveTool('line'); response += ' (Line tool activated)'; }
-      else if (cmd === 'rect' || cmd === 'rec') { setActiveTool('rect'); response += ' (Rectangle tool activated)'; }
-      else if (cmd === 'circle' || cmd === 'c') { setActiveTool('circle'); response += ' (Circle tool activated)'; }
-      else if (cmd === 'select' || cmd === 'sel') { setActiveTool('select'); response += ' (Select tool activated)'; }
-      else if (cmd === 'extrude' || cmd === 'ext') {
-        setActiveTool('extrude');
-        response += ' (Extrude tool activated. Click a rectangle to extrude)';
-      }
-      else { response = `Unknown command: ${cmd}`; }
-
-      setCommandHistory(prev => [...prev, response]);
-      setCommandInput('');
-    }
-  };
 
   const handlePointerDown = (e: import("@react-three/fiber").ThreeEvent<PointerEvent>) => {
     // Only handle drawing on Top view for now (where z=0 plane is active)
@@ -83,7 +62,7 @@ export default function CadEditor() {
         setShapes([...shapes, newShape]);
         setIsDrawing(false);
         setCurrentPoints([]);
-        setCommandHistory(prev => [...prev, 'Line created.']);
+
       } else if (activeTool === 'rect') {
         const start = currentPoints[0];
         const newShape: Shape = {
@@ -102,7 +81,29 @@ export default function CadEditor() {
         setShapes([...shapes, newShape]);
         setIsDrawing(false);
         setCurrentPoints([]);
-        setCommandHistory(prev => [...prev, 'Rectangle created.']);
+      } else if (activeTool === 'circle') {
+        const start = currentPoints[0];
+        const radius = Math.sqrt(Math.pow(pos[0] - start[0], 2) + Math.pow(pos[1] - start[1], 2));
+        const segments = 32;
+        const circlePoints: [number, number, number][] = [];
+        for (let i = 0; i <= segments; i++) {
+          const theta = (i / segments) * Math.PI * 2;
+          circlePoints.push([
+            start[0] + radius * Math.cos(theta),
+            start[1] + radius * Math.sin(theta),
+            0
+          ]);
+        }
+        const newShape: Shape = {
+          id: Date.now().toString(),
+          layerId: activeLayerId,
+          type: 'circle',
+          points: circlePoints,
+          color: layers.find(l => l.id === activeLayerId)?.color || '#fff'
+        };
+        setShapes([...shapes, newShape]);
+        setIsDrawing(false);
+        setCurrentPoints([]);
       }
     }
   };
@@ -122,11 +123,11 @@ export default function CadEditor() {
       const shape = shapes.find(s => s.id === shapeId);
       if (shape && shape.type === 'rect') {
         setShapes(shapes.map(s => s.id === shapeId ? { ...s, type: 'mesh', extrudedHeight: 10 } : s));
-        setCommandHistory(prev => [...prev, `Extruded object ${shapeId} by 10 units.`]);
+
         setActiveTool('select');
         setSelectedShapeId(shapeId);
       } else {
-        setCommandHistory(prev => [...prev, `Cannot extrude this object type.`]);
+
       }
     }
   };
@@ -343,25 +344,13 @@ export default function CadEditor() {
         </div>
       </div>
 
-      {/* Bottom Command Line */}
-      <div className="h-32 bg-[#141414] border-t border-[#333] flex flex-col shrink-0">
-        <div className="flex-1 overflow-y-auto p-2 text-xs text-[#bbb] font-mono whitespace-pre-wrap flex flex-col justify-end">
-          {commandHistory.slice(-10).map((cmd, i) => (
-            <div key={i}>{cmd}</div>
-          ))}
-        </div>
-        <div className="flex items-center bg-[#1a1a1a] border-t border-[#222]">
-          <div className="px-2 text-[#00ffff]"><Terminal size={14} /></div>
-          <input
-            type="text"
-            value={commandInput}
-            onChange={e => setCommandInput(e.target.value)}
-            onKeyDown={handleCommandSubmit}
-            placeholder="Type a command..."
-            className="flex-1 bg-transparent text-[#fff] text-sm p-2 outline-none font-mono"
-            autoFocus
-          />
-        </div>
+      {/* Bottom Status Bar */}
+      <div className="h-8 bg-[#141414] border-t border-[#333] flex items-center px-4 shrink-0 text-xs text-[#888]">
+        {activeTool === 'select' && "Select an object to view properties or start a new tool."}
+        {activeTool === 'line' && "Line Tool: Click to define start and end points."}
+        {activeTool === 'rect' && "Rectangle Tool: Click to define corners."}
+        {activeTool === 'circle' && "Circle Tool: Click to define center and radius."}
+        {activeTool === 'extrude' && "Extrude Tool: Click a 2D shape to extrude into 3D."}
       </div>
 
     </div>
