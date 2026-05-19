@@ -166,8 +166,8 @@ body {
 
 /* Glow Pulse */
 @keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 12px rgba(139,61,255,0.3); }
-  50% { box-shadow: 0 0 28px rgba(139,61,255,0.65); }
+  0%, 100% { box-shadow: 0 0 12px rgba(255,255,255,0.1); }
+  50% { box-shadow: 0 0 28px rgba(255,255,255,0.2); }
 }
 .animate-glow-pulse { animation: glowPulse 2.5s ease-in-out infinite; }
 
@@ -210,7 +210,7 @@ body {
 
 /* Card hover glow */
 .card-glow:hover {
-  box-shadow: 0 0 0 1px rgba(139,61,255,0.4), 0 8px 40px rgba(139,61,255,0.15);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 8px 40px rgba(0,0,0,0.5);
 }
 
 /* Gradient text */

@@ -56,7 +56,7 @@ function VideoTimelineMockup() {
         {Array.from({ length: 24 }).map((_, i) => (
           <div key={i} className="flex-1 h-1 bg-white/10 rounded-full" />
         ))}
-        <div className="absolute left-[35%] top-0 bottom-0 w-px bg-purple-400 shadow-[0_0_8px_rgba(139,61,255,1)]" />
+        <div className="absolute left-[35%] top-0 bottom-0 w-px bg-purple-400" />
       </div>
       <div className="flex-1 space-y-1.5">
         {tracks.map((track, ti) => (
@@ -453,7 +453,7 @@ export default function HomePage() {
                 <div className="animate-slide-up-delay-4 relative z-10 flex items-center gap-3">
                   <button
                     onClick={() => setShowTemplatePicker(true)}
-                    className="bg-[#8b3dff] hover:bg-[#9d5cff] text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 transition-all active:scale-95 shadow-[0_0_24px_rgba(139,61,255,0.4)] hover:shadow-[0_0_30px_rgba(139,61,255,0.8)] hover:scale-[1.03]"
+                    className="bg-[#8b3dff] hover:bg-[#9d5cff] text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 transition-all active:scale-95 hover:scale-[1.03]"
                   >
                     Start Creating <ArrowRight className="w-4 h-4" />
                   </button>
@@ -530,7 +530,7 @@ export default function HomePage() {
                         value={waitlistEmail}
                         onChange={e => setWaitlistEmail(e.target.value)}
                         placeholder="your@email.com"
-                        className="w-full bg-white/[0.06] border border-white/10 text-white text-[14px] rounded-xl pl-11 pr-4 py-3 outline-none focus:border-purple-500 shadow-[0_0_0_2px_rgba(139,61,255,0)] focus:shadow-[0_0_15px_rgba(139,61,255,0.4)] transition-all placeholder:text-white/30"
+                        className="w-full bg-white/[0.06] border border-white/10 text-white text-[14px] rounded-xl pl-11 pr-4 py-3 outline-none focus:border-purple-500 transition-all placeholder:text-white/30"
                       />
                     </div>
                     <button

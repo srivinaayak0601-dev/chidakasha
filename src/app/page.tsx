@@ -212,7 +212,7 @@ export default function LoginPage() {
               <button 
                 type="submit" 
                 disabled={!username.trim()} 
-                className="w-full bg-[#8b3dff] text-white font-semibold text-[15px] rounded-2xl py-3.5 flex items-center justify-center gap-2 hover:bg-[#7a35e0] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(139,61,255,0.2)] mt-2"
+                className="w-full bg-[#8b3dff] text-white font-semibold text-[15px] rounded-2xl py-3.5 flex items-center justify-center gap-2 hover:bg-[#7a35e0] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
               >
                 Enter Workspace
                 <ArrowRight className="w-4 h-4" />
