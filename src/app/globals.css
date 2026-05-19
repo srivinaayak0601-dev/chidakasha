@@ -43,13 +43,13 @@ body {
 }
 
 .input-field:focus {
-  border: 2px solid #8b3dff;
+  border: 2px solid #2563eb;
   padding: 0 15px;
   /* Adjust padding to compensate for thicker border */
 }
 
 .btn-primary {
-  background: #8b3dff;
+  background: #2563eb;
   /* Canva purple */
   color: #fff;
   border: none;
@@ -184,7 +184,7 @@ body {
   100% { background-position: 200% center; }
 }
 .animate-shimmer {
-  background: linear-gradient(90deg, #8b3dff 0%, #c084fc 40%, #8b3dff 60%, #4f46e5 100%);
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 40%, #2563eb 60%, #4f46e5 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

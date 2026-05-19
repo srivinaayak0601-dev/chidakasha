@@ -25,7 +25,7 @@ function WireframeBox() {
       <pointLight position={[4, 4, 4]} intensity={1} color="#a855f7" />
       <mesh>
         <boxGeometry args={[1.5, 1.5, 1.5]} />
-        <meshBasicMaterial color="#8b3dff" wireframe />
+        <meshBasicMaterial color="#2563eb" wireframe />
       </mesh>
       <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={4} enablePan={false} />
     </Canvas>
@@ -34,7 +34,7 @@ function WireframeBox() {
 
 function VideoTimelineMockup() {
   const tracks = [
-    { color: "#8b3dff", clips: [{ w: 45, ml: 0 }, { w: 28, ml: 52 }] },
+    { color: "#2563eb", clips: [{ w: 45, ml: 0 }, { w: 28, ml: 52 }] },
     { color: "#3b82f6", clips: [{ w: 58, ml: 12 }] },
     { color: "#10b981", clips: [{ w: 22, ml: 0 }, { w: 42, ml: 30 }] },
     { color: "#f59e0b", clips: [{ w: 75, ml: 5 }] },
@@ -56,7 +56,7 @@ function VideoTimelineMockup() {
         {Array.from({ length: 24 }).map((_, i) => (
           <div key={i} className="flex-1 h-1 bg-white/10 rounded-full" />
         ))}
-        <div className="absolute left-[35%] top-0 bottom-0 w-px bg-purple-400" />
+        <div className="absolute left-[35%] top-0 bottom-0 w-px bg-blue-400" />
       </div>
       <div className="flex-1 space-y-1.5">
         {tracks.map((track, ti) => (
@@ -79,8 +79,8 @@ function GraphicMockup() {
   return (
     <div className="w-full h-full flex items-center justify-center bg-[#0a0a0c] rounded-xl p-3">
       <div className="w-[140px] aspect-[3/4] bg-gradient-to-br from-[#1a1030] to-[#0c0a1a] rounded-lg border border-white/10 relative overflow-hidden shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-600/20 to-transparent" />
-        <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-purple-500/20 border border-purple-500/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-600/20 to-transparent" />
+        <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-blue-500/20 border border-blue-500/20" />
         <div className="absolute top-4 left-3 right-3">
           <div className="h-1.5 w-10 bg-white/20 rounded mb-2" />
           <div className="h-4 w-full bg-white/80 rounded mb-1" />
@@ -89,10 +89,10 @@ function GraphicMockup() {
           <div className="h-1 w-4/5 bg-white/15 rounded mb-1" />
           <div className="h-1 w-3/5 bg-white/10 rounded" />
         </div>
-        <div className="absolute bottom-10 left-3 right-3 h-14 bg-gradient-to-br from-blue-600/30 to-purple-600/30 rounded-lg border border-white/10 flex items-center justify-center">
+        <div className="absolute bottom-10 left-3 right-3 h-14 bg-gradient-to-br from-blue-600/30 to-blue-600/30 rounded-lg border border-white/10 flex items-center justify-center">
           <div className="w-7 h-7 rounded-full bg-white/10 border border-white/20" />
         </div>
-        <div className="absolute bottom-4 left-3 right-3 h-4 bg-purple-500/90 rounded flex items-center justify-center">
+        <div className="absolute bottom-4 left-3 right-3 h-4 bg-blue-500/90 rounded flex items-center justify-center">
           <div className="h-1 w-12 bg-white/70 rounded" />
         </div>
         {/* selection handles */}
@@ -106,7 +106,7 @@ function GraphicMockup() {
 /* ─── Main Page ──────────────────────────────────────────── */
 
 const HERO_WORDS = ["Video.", "Graphics.", "3D CAD."];
-const HERO_COLORS = ["text-purple-400", "text-blue-400", "text-yellow-400"];
+const HERO_COLORS = ["text-blue-400", "text-blue-400", "text-yellow-400"];
 
 export default function HomePage() {
   const router = useRouter();
@@ -188,9 +188,9 @@ export default function HomePage() {
       label: "Video Editor",
       icon: Film,
       badge: "🎬",
-      color: "from-purple-600/20 to-purple-600/5",
-      border: "border-purple-500/20",
-      accent: "text-purple-400",
+      color: "from-blue-600/20 to-blue-600/5",
+      border: "border-blue-500/20",
+      accent: "text-blue-400",
       desc: "Multi-track timeline. Cut, trim, layer, export.",
       preview: <VideoTimelineMockup />,
     },
@@ -240,7 +240,7 @@ export default function HomePage() {
         className={`bg-[#0d0d0f] border-r border-white/[0.07] flex flex-col flex-shrink-0 transition-all duration-300 ${isSidebarCollapsed ? "w-[68px]" : "w-[240px]"}`}
       >
         <div className={`p-4 flex items-center gap-3 mt-2 ${isSidebarCollapsed ? "justify-center" : ""}`}>
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 flex items-center justify-center font-bold text-sm flex-shrink-0">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-sm flex-shrink-0">
             {user.username.charAt(0).toUpperCase()}
           </div>
           {!isSidebarCollapsed && (
@@ -252,7 +252,7 @@ export default function HomePage() {
         </div>
 
         <div className="px-3 mb-5 mt-1">
-          <button className={`w-full bg-[#8b3dff] hover:bg-[#7a35e0] text-white font-semibold text-[13px] rounded-lg py-2.5 flex items-center justify-center gap-2 transition-all active:scale-95 ${isSidebarCollapsed ? "px-2" : "px-4"}`}>
+          <button className={`w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-semibold text-[13px] rounded-lg py-2.5 flex items-center justify-center gap-2 transition-all active:scale-95 ${isSidebarCollapsed ? "px-2" : "px-4"}`}>
             <Plus className="w-4 h-4 flex-shrink-0" />
             {!isSidebarCollapsed && <span>Create new</span>}
           </button>
@@ -311,9 +311,9 @@ export default function HomePage() {
                   </div>
                 </button>
 
-                <button onClick={() => { setActiveTool("Video Edit"); setShowTemplatePicker(false); }} className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] hover:border-purple-500/30 transition-all group text-left">
-                  <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Film className="w-6 h-6 text-purple-400" />
+                <button onClick={() => { setActiveTool("Video Edit"); setShowTemplatePicker(false); }} className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] hover:border-blue-500/30 transition-all group text-left">
+                  <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Film className="w-6 h-6 text-blue-400" />
                   </div>
                   <div>
                     <h3 className="text-white font-semibold mb-1">A Video</h3>
@@ -353,7 +353,7 @@ export default function HomePage() {
               <button
                 key={tab.label}
                 onClick={() => setActiveTool(tab.id === activeTool ? null : tab.id)}
-                className={`px-3 py-1.5 rounded-md text-[13px] font-medium flex items-center gap-2 transition-all ${activeTool === tab.id ? "bg-purple-600/20 text-purple-300 border border-purple-500/30" : "text-white/50 hover:text-white hover:bg-white/[0.06]"}`}
+                className={`px-3 py-1.5 rounded-md text-[13px] font-medium flex items-center gap-2 transition-all ${activeTool === tab.id ? "bg-blue-600/20 text-blue-300 border border-blue-500/30" : "text-white/50 hover:text-white hover:bg-white/[0.06]"}`}
               >
                 <tab.icon className="w-5 h-5" /> {tab.label}
               </button>
@@ -376,7 +376,7 @@ export default function HomePage() {
           ) : activeTool === "AI Guide" ? (
             <div className="h-full flex flex-col items-center justify-center p-6 bg-[#09090b]">
               <div className="max-w-2xl w-full text-center">
-                <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 text-[12px] text-purple-300 mb-6">
+                <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-1.5 text-[12px] text-blue-300 mb-6">
                   <Bot className="w-4 h-4" /> AI Command Center
                 </div>
                 <h1 className="text-4xl font-black text-white mb-4 tracking-tight">What do you want to build?</h1>
@@ -385,18 +385,18 @@ export default function HomePage() {
                 </p>
                 <form className="relative" onSubmit={(e) => e.preventDefault()}>
                   <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <WandSparkles className="h-5 w-5 text-purple-400" />
+                    <WandSparkles className="h-5 w-5 text-blue-400" />
                   </div>
                   <input
                     type="text"
                     value={aiPrompt}
                     onChange={(e) => setAiPrompt(e.target.value)}
                     placeholder="Create a 10cm x 10cm hex-bolt with a 2mm thread..."
-                    className="w-full bg-[#121214] border border-white/10 text-white text-[16px] rounded-2xl pl-12 pr-32 py-5 outline-none focus:border-purple-500/50 shadow-2xl focus:ring-1 focus:ring-purple-500/50 transition-all placeholder:text-white/20"
+                    className="w-full bg-[#121214] border border-white/10 text-white text-[16px] rounded-2xl pl-12 pr-32 py-5 outline-none focus:border-blue-500/50 shadow-2xl focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-white/20"
                   />
                   <button
                     type="submit"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-[#8b3dff] hover:bg-[#7a35e0] text-white font-semibold px-4 py-2.5 rounded-xl transition-all active:scale-95 text-[14px]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-semibold px-4 py-2.5 rounded-xl transition-all active:scale-95 text-[14px]"
                   >
                     Generate
                   </button>
@@ -418,12 +418,12 @@ export default function HomePage() {
               {/* ── HERO ── */}
               <div className="relative flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden">
                 {/* Ambient glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
                 <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-blue-600/8 rounded-full blur-[100px] pointer-events-none" />
 
                 <div className="animate-slide-up relative z-10">
                   <div className="inline-flex items-center gap-2 bg-white/[0.06] border border-white/10 rounded-full px-4 py-1.5 text-[12px] text-white/60 mb-8 animate-glow-pulse">
-                    <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                    <Sparkles className="w-3.5 h-3.5 text-blue-400" />
                     Now in Beta — Creative Suite for Professionals
                   </div>
                 </div>
@@ -453,7 +453,7 @@ export default function HomePage() {
                 <div className="animate-slide-up-delay-4 relative z-10 flex items-center gap-3">
                   <button
                     onClick={() => setShowTemplatePicker(true)}
-                    className="bg-[#8b3dff] hover:bg-[#9d5cff] text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 transition-all active:scale-95 hover:scale-[1.03]"
+                    className="bg-[#2563eb] hover:bg-[#3b82f6] text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 transition-all active:scale-95 hover:scale-[1.03]"
                   >
                     Start Creating <ArrowRight className="w-4 h-4" />
                   </button>
@@ -505,7 +505,7 @@ export default function HomePage() {
 
               {/* ── BETA WAITLIST ── */}
               <div id="waitlist" className="border-t border-white/[0.06] bg-[#0d0d0f] px-8 py-16 flex flex-col items-center text-center">
-                <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 text-[12px] text-purple-300 mb-6">
+                <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-1.5 text-[12px] text-blue-300 mb-6">
                   <Sparkles className="w-3.5 h-3.5" /> Limited Beta Access
                 </div>
                 <h2 className="text-[32px] font-black text-white mb-3 tracking-tight">
@@ -530,13 +530,13 @@ export default function HomePage() {
                         value={waitlistEmail}
                         onChange={e => setWaitlistEmail(e.target.value)}
                         placeholder="your@email.com"
-                        className="w-full bg-white/[0.06] border border-white/10 text-white text-[14px] rounded-xl pl-11 pr-4 py-3 outline-none focus:border-purple-500 transition-all placeholder:text-white/30"
+                        className="w-full bg-white/[0.06] border border-white/10 text-white text-[14px] rounded-xl pl-11 pr-4 py-3 outline-none focus:border-blue-500 transition-all placeholder:text-white/30"
                       />
                     </div>
                     <button
                       type="submit"
                       disabled={waitlistState === "loading"}
-                      className="bg-[#8b3dff] hover:bg-[#7a35e0] disabled:opacity-60 text-white font-semibold px-5 py-3 rounded-xl flex items-center gap-2 transition-all active:scale-95 whitespace-nowrap"
+                      className="bg-[#2563eb] hover:bg-[#1d4ed8] disabled:opacity-60 text-white font-semibold px-5 py-3 rounded-xl flex items-center gap-2 transition-all active:scale-95 whitespace-nowrap"
                     >
                       {waitlistState === "loading" ? "Joining…" : "Join Beta"}
                     </button>

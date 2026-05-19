@@ -84,7 +84,7 @@ export default function LoginPage() {
     <main className="h-screen w-full bg-[#09090A] text-[#E0E0E0] flex overflow-hidden font-sans p-4 md:p-6 lg:p-8 items-center justify-center">
       
       {/* Background ambient glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#8b3dff] rounded-full blur-[200px] opacity-10 pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#2563eb] rounded-full blur-[200px] opacity-10 pointer-events-none"></div>
 
       {/* The Floating App Window */}
       <div className="w-full max-w-[440px] bg-[#121214] border border-[#ffffff08] rounded-[32px] overflow-hidden flex flex-col shadow-2xl relative ring-1 ring-black/50 p-10 z-10">
@@ -92,7 +92,7 @@ export default function LoginPage() {
         {/* Header */}
         <div className="flex justify-center mb-8">
           <div className="w-12 h-12 rounded-2xl bg-[#ffffff05] border border-[#ffffff08] flex items-center justify-center shadow-inner">
-            <Sparkles className="w-6 h-6 text-[#8b3dff]" />
+            <Sparkles className="w-6 h-6 text-[#2563eb]" />
           </div>
         </div>
 
@@ -111,14 +111,14 @@ export default function LoginPage() {
             <form onSubmit={handleSendOtp} className="space-y-4">
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-[#707070] group-focus-within:text-[#8b3dff] transition-colors" />
+                  <Mail className="h-5 w-5 text-[#707070] group-focus-within:text-[#2563eb] transition-colors" />
                 </div>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-[#161618] border border-[#ffffff08] text-white text-[15px] rounded-2xl pl-12 pr-4 py-3.5 outline-none focus:border-[#8b3dff]/50 focus:ring-1 focus:ring-[#8b3dff]/50 transition-all placeholder:text-[#505050]"
+                  className="w-full bg-[#161618] border border-[#ffffff08] text-white text-[15px] rounded-2xl pl-12 pr-4 py-3.5 outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/50 transition-all placeholder:text-[#505050]"
                   placeholder="name@example.com"
                 />
               </div>
@@ -151,7 +151,7 @@ export default function LoginPage() {
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <KeyRound className="h-5 w-5 text-[#707070] group-focus-within:text-[#8b3dff] transition-colors" />
+                  <KeyRound className="h-5 w-5 text-[#707070] group-focus-within:text-[#2563eb] transition-colors" />
                 </div>
                 <input
                   type="text"
@@ -159,7 +159,7 @@ export default function LoginPage() {
                   maxLength={6}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))} // only numbers
-                  className="w-full bg-[#161618] border border-[#ffffff08] text-white text-[18px] tracking-[0.5em] text-center rounded-2xl pl-10 pr-4 py-3.5 outline-none focus:border-[#8b3dff]/50 focus:ring-1 focus:ring-[#8b3dff]/50 transition-all placeholder:text-[#303030] placeholder:tracking-normal"
+                  className="w-full bg-[#161618] border border-[#ffffff08] text-white text-[18px] tracking-[0.5em] text-center rounded-2xl pl-10 pr-4 py-3.5 outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/50 transition-all placeholder:text-[#303030] placeholder:tracking-normal"
                   placeholder="••••••"
                 />
               </div>
@@ -197,14 +197,14 @@ export default function LoginPage() {
             <form onSubmit={handleSetUsername} className="space-y-4">
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-[#707070] group-focus-within:text-[#8b3dff] transition-colors" />
+                  <User className="h-5 w-5 text-[#707070] group-focus-within:text-[#2563eb] transition-colors" />
                 </div>
                 <input
                   type="text"
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full bg-[#161618] border border-[#ffffff08] text-white text-[15px] rounded-2xl pl-12 pr-4 py-3.5 outline-none focus:border-[#8b3dff]/50 focus:ring-1 focus:ring-[#8b3dff]/50 transition-all placeholder:text-[#505050]"
+                  className="w-full bg-[#161618] border border-[#ffffff08] text-white text-[15px] rounded-2xl pl-12 pr-4 py-3.5 outline-none focus:border-[#2563eb]/50 focus:ring-1 focus:ring-[#2563eb]/50 transition-all placeholder:text-[#505050]"
                   placeholder="Your display name"
                 />
               </div>
@@ -212,7 +212,7 @@ export default function LoginPage() {
               <button 
                 type="submit" 
                 disabled={!username.trim()} 
-                className="w-full bg-[#8b3dff] text-white font-semibold text-[15px] rounded-2xl py-3.5 flex items-center justify-center gap-2 hover:bg-[#7a35e0] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                className="w-full bg-[#2563eb] text-white font-semibold text-[15px] rounded-2xl py-3.5 flex items-center justify-center gap-2 hover:bg-[#1d4ed8] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
               >
                 Enter Workspace
                 <ArrowRight className="w-4 h-4" />

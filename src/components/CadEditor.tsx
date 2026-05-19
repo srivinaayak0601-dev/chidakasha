@@ -49,7 +49,7 @@ interface ShapeData {
   metadata?: string; // For group attributes
 }
 
-const colors = ["#8b3dff", "#00c4cc", "#ff0099", "#f59e0b", "#10b981", "#3b82f6", "#e2e8f0"];
+const colors = ["#2563eb", "#00c4cc", "#ff0099", "#f59e0b", "#10b981", "#3b82f6", "#e2e8f0"];
 
 function SafeLine({ points, color, lineWidth, dashed, dashSize, gapSize }: { points: THREE.Vector3[], color: string, lineWidth?: number, dashed?: boolean, dashSize?: number, gapSize?: number }) {
   const lineObj = useMemo(() => {
@@ -522,14 +522,14 @@ export default function CadEditor() {
       <div className="w-16 bg-[#121214] border-r border-[#ffffff15] flex flex-col items-center py-4 gap-1 z-10 shadow-lg overflow-y-auto">
         {/* Workspace Toggle */}
         <div className="flex flex-col gap-1 mb-2 w-full items-center">
-          <button onClick={() => setWorkspace('general')} className={`p-2 w-10 h-10 rounded-lg text-[10px] font-bold transition ${workspace === 'general' ? 'bg-[#8b3dff] text-white' : 'text-gray-500 hover:text-white hover:bg-white/5'}`} title="General">GEN</button>
+          <button onClick={() => setWorkspace('general')} className={`p-2 w-10 h-10 rounded-lg text-[10px] font-bold transition ${workspace === 'general' ? 'bg-[#2563eb] text-white' : 'text-gray-500 hover:text-white hover:bg-white/5'}`} title="General">GEN</button>
           <button onClick={() => setWorkspace('architecture')} className={`p-2 w-10 h-10 rounded-lg text-[10px] font-bold transition ${workspace === 'architecture' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-white hover:bg-white/5'}`} title="Architecture">ARC</button>
           <button onClick={() => setWorkspace('mechanical')} className={`p-2 w-10 h-10 rounded-lg text-[10px] font-bold transition ${workspace === 'mechanical' ? 'bg-amber-600 text-white' : 'text-gray-500 hover:text-white hover:bg-white/5'}`} title="Mechanical">MEC</button>
         </div>
         <div className="w-8 h-[1px] bg-white/10 mb-2" />
 
         {/* General Tools (always visible) */}
-        <button className="p-3 bg-[#8b3dff]/20 text-[#8b3dff] rounded-xl hover:bg-[#8b3dff]/30 transition" title="Select">
+        <button className="p-3 bg-[#2563eb]/20 text-[#2563eb] rounded-xl hover:bg-[#2563eb]/30 transition" title="Select">
           <MousePointer2 className="w-5 h-5" />
         </button>
         <button onClick={() => addShape("box")} className="p-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition" title="Box">
@@ -569,28 +569,28 @@ export default function CadEditor() {
         <div className="w-8 h-[1px] bg-white/10 my-1" />
         <button
           onClick={() => { setSketchMode(!sketchMode); setPolylineMode(false); setDimensionMode(false); }}
-          className={`p-3 rounded-xl transition ${sketchMode ? 'bg-[#8b3dff] text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+          className={`p-3 rounded-xl transition ${sketchMode ? 'bg-[#2563eb] text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
           title="Draw Custom Sketch"
         >
           <PenTool className="w-5 h-5" />
         </button>
         <button
           onClick={() => { setPolylineMode(!polylineMode); setSketchMode(false); setDimensionMode(false); }}
-          className={`p-3 rounded-xl transition ${polylineMode ? 'bg-[#8b3dff] text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+          className={`p-3 rounded-xl transition ${polylineMode ? 'bg-[#2563eb] text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
           title="Draw 2D Polyline"
         >
           <Activity className="w-5 h-5" />
         </button>
         <button
           onClick={() => { setDimensionMode(!dimensionMode); setSketchMode(false); setPolylineMode(false); }}
-          className={`p-3 rounded-xl transition ${dimensionMode ? 'bg-[#8b3dff] text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+          className={`p-3 rounded-xl transition ${dimensionMode ? 'bg-[#2563eb] text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
           title="Smart Dimension"
         >
           <Ruler className="w-5 h-5" />
         </button>
         <button
           onClick={() => setSculptMode(!sculptMode)}
-          className={`p-3 rounded-xl transition ${sculptMode ? 'bg-[#8b3dff] text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+          className={`p-3 rounded-xl transition ${sculptMode ? 'bg-[#2563eb] text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
           title="Sculpt Mode (Push/Pull)"
         >
           <Hand className="w-5 h-5" />
@@ -630,12 +630,12 @@ export default function CadEditor() {
 
         {sketchMode && (
           <div className="absolute top-16 left-4 right-4 flex justify-center z-10 pointer-events-none">
-            <div className="bg-[#8b3dff]/20 backdrop-blur-md px-4 py-2 rounded-full border border-[#8b3dff]/50 text-white font-medium text-sm pointer-events-auto flex items-center gap-3">
-              <span className="animate-pulse w-2 h-2 rounded-full bg-[#8b3dff]"></span>
+            <div className="bg-[#2563eb]/20 backdrop-blur-md px-4 py-2 rounded-full border border-[#2563eb]/50 text-white font-medium text-sm pointer-events-auto flex items-center gap-3">
+              <span className="animate-pulse w-2 h-2 rounded-full bg-[#2563eb]"></span>
               Click on the grid to draw a shape
               <button
                 onClick={finishSketch}
-                className="ml-2 flex items-center gap-1 bg-[#8b3dff] text-white px-3 py-1 rounded-full text-xs hover:bg-[#9d5cff] transition"
+                className="ml-2 flex items-center gap-1 bg-[#2563eb] text-white px-3 py-1 rounded-full text-xs hover:bg-[#3b82f6] transition"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" /> Finish Sketch
               </button>
@@ -645,12 +645,12 @@ export default function CadEditor() {
 
         {polylineMode && (
           <div className="absolute top-16 left-4 right-4 flex justify-center z-10 pointer-events-none">
-            <div className="bg-[#8b3dff]/20 backdrop-blur-md px-4 py-2 rounded-full border border-[#8b3dff]/50 text-white font-medium text-sm pointer-events-auto flex items-center gap-3">
-              <span className="animate-pulse w-2 h-2 rounded-full bg-[#8b3dff]"></span>
+            <div className="bg-[#2563eb]/20 backdrop-blur-md px-4 py-2 rounded-full border border-[#2563eb]/50 text-white font-medium text-sm pointer-events-auto flex items-center gap-3">
+              <span className="animate-pulse w-2 h-2 rounded-full bg-[#2563eb]"></span>
               Click to draw 2D polyline points
               <button
                 onClick={finishPolyline}
-                className="ml-2 flex items-center gap-1 bg-[#8b3dff] text-white px-3 py-1 rounded-full text-xs hover:bg-[#9d5cff] transition"
+                className="ml-2 flex items-center gap-1 bg-[#2563eb] text-white px-3 py-1 rounded-full text-xs hover:bg-[#3b82f6] transition"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" /> Finish Polyline
               </button>
@@ -660,8 +660,8 @@ export default function CadEditor() {
 
         {dimensionMode && (
           <div className="absolute top-16 left-4 right-4 flex justify-center z-10 pointer-events-none">
-            <div className="bg-[#8b3dff]/20 backdrop-blur-md px-4 py-2 rounded-full border border-[#8b3dff]/50 text-white font-medium text-sm pointer-events-auto flex items-center gap-3">
-              <span className="animate-pulse w-2 h-2 rounded-full bg-[#8b3dff]"></span>
+            <div className="bg-[#2563eb]/20 backdrop-blur-md px-4 py-2 rounded-full border border-[#2563eb]/50 text-white font-medium text-sm pointer-events-auto flex items-center gap-3">
+              <span className="animate-pulse w-2 h-2 rounded-full bg-[#2563eb]"></span>
               {dimensionPoint ? "Click second point to finish dimension" : "Click first point to start dimension"}
             </div>
           </div>
@@ -669,8 +669,8 @@ export default function CadEditor() {
 
         {sculptMode && (
           <div className="absolute top-16 left-4 right-4 flex justify-center z-10 pointer-events-none">
-            <div className="bg-[#8b3dff]/20 backdrop-blur-md px-4 py-2 rounded-full border border-[#8b3dff]/50 text-white font-medium text-sm pointer-events-auto flex items-center gap-3">
-              <span className="animate-pulse w-2 h-2 rounded-full bg-[#8b3dff]"></span>
+            <div className="bg-[#2563eb]/20 backdrop-blur-md px-4 py-2 rounded-full border border-[#2563eb]/50 text-white font-medium text-sm pointer-events-auto flex items-center gap-3">
+              <span className="animate-pulse w-2 h-2 rounded-full bg-[#2563eb]"></span>
               Click and drag on a mesh to sculpt
             </div>
           </div>
@@ -725,7 +725,7 @@ export default function CadEditor() {
           {/* Active Dimension Point */}
           {dimensionMode && dimensionPoint && (
              <Sphere args={[0.05]} position={dimensionPoint}>
-               <meshBasicMaterial color="#8b3dff" />
+               <meshBasicMaterial color="#2563eb" />
              </Sphere>
           )}
 
@@ -734,20 +734,20 @@ export default function CadEditor() {
              <group>
                {sketchPoints.map((p, i) => (
                  <Sphere key={i} args={[0.05]} position={p}>
-                   <meshBasicMaterial color="#8b3dff" />
+                   <meshBasicMaterial color="#2563eb" />
                  </Sphere>
                ))}
                {sketchPoints.length > 1 && (
                  <SafeLine
                    points={sketchPoints}
-                   color="#8b3dff"
+                   color="#2563eb"
                    lineWidth={2}
                  />
                )}
                 {sketchPoints.length > 2 && sketchMode && (
                   <SafeLine
                     points={[sketchPoints[sketchPoints.length-1], sketchPoints[0]]}
-                    color="#8b3dff"
+                    color="#2563eb"
                     lineWidth={2}
                     dashed
                     dashSize={0.2}
@@ -916,7 +916,7 @@ export default function CadEditor() {
             </h3>
             <button
               onClick={() => setLayers([...layers, { id: uuidv4(), name: `Layer ${layers.length}`, visible: true, color: '#ffffff' }])}
-              className="text-[#8b3dff] hover:bg-[#8b3dff]/20 p-1 rounded transition"
+              className="text-[#2563eb] hover:bg-[#2563eb]/20 p-1 rounded transition"
             >
               <Plus className="w-4 h-4" />
             </button>
@@ -926,10 +926,10 @@ export default function CadEditor() {
               <div
                 key={layer.id}
                 onClick={() => setActiveLayer(layer.id)}
-                className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition border ${activeLayer === layer.id ? 'bg-[#8b3dff]/10 border-[#8b3dff]/50' : 'bg-white/5 border-transparent hover:bg-white/10'}`}
+                className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition border ${activeLayer === layer.id ? 'bg-[#2563eb]/10 border-[#2563eb]/50' : 'bg-white/5 border-transparent hover:bg-white/10'}`}
               >
                 <div className="flex items-center gap-2 text-sm text-white/80">
-                  <div className={`w-2 h-2 rounded-full ${activeLayer === layer.id ? 'bg-[#8b3dff]' : 'bg-transparent'}`} />
+                  <div className={`w-2 h-2 rounded-full ${activeLayer === layer.id ? 'bg-[#2563eb]' : 'bg-transparent'}`} />
                   {layer.name}
                 </div>
                 <button
